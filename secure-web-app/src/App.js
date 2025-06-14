@@ -1,23 +1,34 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import LoginForm from './components/LoginForm';
+import ChuckNorris from './components/ChuckNorris';
 
 function App() {
+  const [token, setToken] = useState(null);
+  const [error, setError] = useState('');
+
+  const handleLogin = (uuid) => {
+    setToken(uuid);
+    setError('');
+  };
+
+  const handleLogout = () => {
+    setToken(null);
+    setError('');
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
+    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4">
+      <h1 className="text-3xl font-bold mb-6">Web Application Security Lab</h1>
+      {error && (
+        <p style={{ color: 'red', marginBottom: '1rem', padding: '0.5rem', backgroundColor: '#ffeeee', border: '1px solid #ffcccc', borderRadius: '4px' }}>
+          {error}
         </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      )}
+      {token ? (
+        <ChuckNorris token={token} onLogout={handleLogout} />
+      ) : (
+        <LoginForm onLogin={handleLogin} />
+      )}
     </div>
   );
 }

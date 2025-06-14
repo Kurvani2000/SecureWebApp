@@ -10,7 +10,7 @@ const LoginForm = ({ onLogin }) => {
       setError('Username and password are required');
       return false;
     }
-    if (!username.includes('@')) {
+    if (!/\S+@\S+\.\S+/.test(username)) {
       setError('Username must be a valid email');
       return false;
     }
@@ -40,7 +40,7 @@ const LoginForm = ({ onLogin }) => {
   };
 
   return (
-    <div style ={{
+    <div style={{
         maxWidth: '400px',
         margin: '2rem auto',
         padding: '20px',
@@ -63,8 +63,8 @@ const LoginForm = ({ onLogin }) => {
                     border: '1px solid #ccc',
                     borderRadius: '4px'
                 }}
-            ></input>
-            <input>
+            />
+            <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -75,15 +75,16 @@ const LoginForm = ({ onLogin }) => {
                     border: '1px solid #ccc',
                     borderRadius: '4px'
                 }}
-            </input>
+            />
             {error && <div style={{
                 color: 'red',
                 padding: '8px',
                 backgroundColor: '#ffeeee',
                 border: '1px solid #ffcccc',
                 borderRadius: '4px'
-                }}>
-            {error}</div>}
+            }}>
+                {error}
+            </div>}
             <button type="submit" style={{
                 padding: '10px',
                 backgroundColor: '#007bff',
@@ -92,10 +93,12 @@ const LoginForm = ({ onLogin }) => {
                 borderRadius: '4px',
                 cursor: 'pointer',
                 fontSize: '16px'
-                }}>
+            }}>
                 Login
             </button>
         </form>
     </div>
   );
 };
+
+export default LoginForm;

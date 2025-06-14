@@ -6,22 +6,26 @@ const ChuckNorris = ({ token, onLogout }) => {
   const [error, setError] = useState('');
 
   useEffect(() => {
+    console.log('useEffect triggered, token:', token); // Debug token
     const fetchFact = async () => {
+      setLoading(true); // Explicitly set loading to true at the start
       try {
         const response = await fetch('http://localhost:3333/fact', {
           headers: { Authorization: `Bearer ${token}` }
         });
-        
+        console.log('Fetch response status:', response.status); // Debug status
         const data = await response.json();
         if (response.ok) {
           setFact(data.fact);
+          setError('');
         } else {
           setError(data.message || 'Failed to fetch fact');
         }
       } catch (err) {
         setError('Network error');
+        console.error('Fetch error:', err);
       } finally {
-        setLoading(false);
+        setLoading(false); // Ensure loading is set to false
       }
     };
     
@@ -30,13 +34,18 @@ const ChuckNorris = ({ token, onLogout }) => {
 
   const handleLogout = async () => {
     try {
-      await fetch('http://localhost:3333/logout', {
+      const response = await fetch('http://localhost:3333/logout', {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` }
       });
-      onLogout();
+      if (response.ok) {
+        onLogout();
+      } else {
+        const data = await response.json();
+        setError(data.message || 'Logout failed');
+      }
     } catch (err) {
-      console.error('Logout failed:', err);
+      setError('Logout failed: Network error');
     }
   };
 
@@ -50,10 +59,14 @@ const ChuckNorris = ({ token, onLogout }) => {
         {loading ? (
             <div style={{
                 margin: '20px 0',
-                fontSize: '18px'
-            }}>
-                Loading...
-            </div>
+                fontSize: '18px',
+                border: '4px solid #f3f3f3',
+                borderTop: '4px solid #007bff',
+                borderRadius: '50%',
+                width: '20px',
+                height: '20px',
+                animation: 'spin 1s linear infinite'
+            }} />
         ) : error ? (
             <div style={{
                 color: 'red',
@@ -70,7 +83,7 @@ const ChuckNorris = ({ token, onLogout }) => {
                 padding: '20px',
                 border: '1px solid #eee',
                 borderRadius: '8px',
-                backgroundColor: '#f9f9f9',
+                backgroundColor: '#f9f3f9',
                 fontSize: '18px',
                 lineHeight: '1.6'
             }}>
@@ -92,3 +105,5 @@ const ChuckNorris = ({ token, onLogout }) => {
     </div>
   );
 };
+
+export default ChuckNorris;
